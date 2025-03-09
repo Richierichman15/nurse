@@ -3,76 +3,99 @@ import pandas as pd
 import os
 from login import login_page, logout_button
 from register import register_page, show_login_option
+from home import home_page
+from request import request_page
 
 # Initialize session state for login status and page view
 if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
 if 'current_page' not in st.session_state:
-    st.session_state['current_page'] = 'login'  # Options: 'login', 'register'
+    st.session_state['current_page'] = 'home'  # Default to home page instead of login
 
-# Main application
+# Main application - now accessible to all users regardless of login status
 def show_main_app():
-    st.title("Nurse Help Request")
-    st.write("If you need assistance from a nurse, please fill out the form below.")
+    # Show different pages based on current_page value
+    if st.session_state['current_page'] == 'home':
+        home_page()
+    elif st.session_state['current_page'] == 'services':
+        st.title("Our Services")
+        st.write("This page will display detailed information about our services.")
+        # Add your services page content here
+    elif st.session_state['current_page'] == 'for_nurses':
+        st.title("For Nurses")
+        st.write("Information and resources for nursing professionals.")
+        # Add your for nurses page content here
+    elif st.session_state['current_page'] == 'for_clients':
+        st.title("For Clients")
+        st.write("Information for healthcare facilities seeking staffing solutions.")
+        # Add your for clients page content here
+    elif st.session_state['current_page'] == 'jobs':
+        st.title("Available Jobs")
+        st.write("Browse current job openings.")
+        # Add your jobs page content here
+    elif st.session_state['current_page'] == 'contact':
+        st.title("Contact Us")
+        st.write("Get in touch with our team.")
+        # Add your contact page content here
+    elif st.session_state['current_page'] == 'request':
+        request_page()
+    else:
+        # Default to home page
+        home_page()
 
-    file_path = 'nurse_requests.csv'
-
-    with st.form(key='nurse_request_form'):
-        name = st.text_input("Your Name:")
-        phone = st.text_input("Your Phone Number:")
-        address = st.text_input("Your Address:")
-        request_description = st.text_area("Describe your request:")
-
-        submit_button = st.form_submit_button("Send Request")
-
-        if submit_button:
-            if name and phone and address and request_description:
-                new_request = pd.DataFrame({
-                    'Name': [name],
-                    'Phone': [phone],
-                    'Address': [address],
-                    'Description': [request_description]
-                })
-                
-                if os.path.exists(file_path):
-                    new_request.to_csv(file_path, mode='a', header=False, index=False)
-                else:
-                    new_request.to_csv(file_path, mode='w', header=True, index=False)
-                
-                st.success("Submitted successfully! Getting your local nurse soon.")
-            else:
-                st.error("Please fill out all fields before submitting.")
-
-# Show appropriate page based on user state
-if not st.session_state['logged_in']:
-    # Show login or registration page
-    if st.session_state['current_page'] == 'login':
-        # Show login page
-        if login_page():
-            st.session_state['logged_in'] = True
+# Display login/logout in sidebar based on current state
+def show_auth_sidebar():
+    st.sidebar.markdown("---")
+    if not st.session_state['logged_in']:
+        if st.sidebar.button("Login"):
+            st.session_state['current_page'] = 'login'
             st.rerun()
-        
-        # Option to go to registration page
-        if st.button("Create a new account"):
+        if st.sidebar.button("Register"):
             st.session_state['current_page'] = 'register'
             st.rerun()
+    else:
+        if logout_button():
+            st.session_state['logged_in'] = False
+            st.rerun()
+
+# Main flow control
+if st.session_state['current_page'] == 'login':
+    # Show login page
+    if login_page():
+        st.session_state['logged_in'] = True
+        st.session_state['current_page'] = 'home'  # Go to home page after login
+        st.rerun()
     
-    else:  # Registration page
-        # Show registration page
-        if register_page():
-            # After successful registration, go to login page
-            st.session_state['current_page'] = 'login'
-            st.rerun()
+    # Option to go to registration page
+    if st.button("Create a new account"):
+        st.session_state['current_page'] = 'register'
+        st.rerun()
         
-        # Option to go back to login page
-        if show_login_option():
-            st.session_state['current_page'] = 'login'
-            st.rerun()
+    # Option to go back to home without logging in
+    if st.button("Back to Home"):
+        st.session_state['current_page'] = 'home'
+        st.rerun()
+
+elif st.session_state['current_page'] == 'register':
+    # Show registration page
+    if register_page():
+        # After successful registration, go to login page
+        st.session_state['current_page'] = 'login'
+        st.rerun()
+    
+    # Option to go back to login page
+    if show_login_option():
+        st.session_state['current_page'] = 'login'
+        st.rerun()
+        
+    # Option to go back to home without logging in
+    if st.button("Back to Home"):
+        st.session_state['current_page'] = 'home'
+        st.rerun()
+
 else:
-    # Show main app
+    # Show the main application with the requested page - now accessible to all users
     show_main_app()
     
-    # Check if logout button clicked
-    if logout_button():
-        st.session_state['logged_in'] = False
-        st.rerun()
+    # Display login/register options in sidebar
+    show_auth_sidebar()
