@@ -5,6 +5,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from navbar import navbar
+import datetime
 
 # Email configuration - replace with your actual email settings
 EMAIL_SENDER = "GRNLLC8@gmail.com"  # Your email address
@@ -49,6 +50,10 @@ def send_email_notification(request_data):
         # Connect to server and send email
         server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
         server.starttls()  # Enable TLS encryption
+        
+        # Debug information
+        st.write(f"Connecting to: {SMTP_SERVER}:{SMTP_PORT}")
+        
         server.login(EMAIL_SENDER, EMAIL_PASSWORD)
         server.send_message(msg)
         server.quit()
@@ -71,7 +76,13 @@ def request_page():
     file_path = 'nurse_requests.csv'
 
     with st.form(key='nurse_request_form'):
-        name = st.text_input("Your Name:")
+        # If user is logged in, use their username, otherwise ask for name
+        if 'logged_in' in st.session_state and st.session_state['logged_in'] and 'username' in st.session_state:
+            name = st.session_state['username']
+            st.write(f"Requesting as: {name}")
+        else:
+            name = st.text_input("Your Name:")
+        
         phone = st.text_input("Your Phone Number:")
         address = st.text_input("Your Address:")
         request_description = st.text_area("Describe your request:")
@@ -80,12 +91,18 @@ def request_page():
 
         if submit_button:
             if name and phone and address and request_description:
-                # Create request data
+                # Get current date
+                today = datetime.datetime.now().strftime("%Y-%m-%d")
+                
+                # Create request data with required fields
                 request_data = {
                     'Name': name,
                     'Phone': phone,
                     'Address': address,
-                    'Description': request_description
+                    'Description': request_description,
+                    'Status': 'New',  # Initialize with New status
+                    'Request_Date': today,  # Add request date
+                    'Assigned_Nurse': 'Unassigned'  # Initialize as unassigned
                 }
                 
                 # Create DataFrame for CSV storage
@@ -93,7 +110,16 @@ def request_page():
                 
                 # Save to CSV
                 if os.path.exists(file_path):
-                    new_request.to_csv(file_path, mode='a', header=False, index=False)
+                    # Check if file has all required columns
+                    existing_df = pd.read_csv(file_path)
+                    
+                    # Add any missing columns
+                    for col in request_data.keys():
+                        if col not in existing_df.columns:
+                            existing_df[col] = None
+                    
+                    # Save the updated DataFrame with the new row
+                    pd.concat([existing_df, new_request], ignore_index=True).to_csv(file_path, index=False)
                 else:
                     new_request.to_csv(file_path, mode='w', header=True, index=False)
                 

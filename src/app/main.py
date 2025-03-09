@@ -7,6 +7,7 @@ from home import home_page
 from request import request_page
 from services import services_page
 from admin import admin_dashboard
+from client_dashboard import client_dashboard
 
 # Initialize session state for login status and page view
 if 'logged_in' not in st.session_state:
@@ -41,6 +42,8 @@ def show_main_app():
         request_page()
     elif st.session_state['current_page'] == 'admin':
         admin_dashboard()
+    elif st.session_state['current_page'] == 'client_dashboard':
+        client_dashboard()
     else:
         # Default to home page
         home_page()

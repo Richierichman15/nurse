@@ -4,7 +4,17 @@ def navbar():
     """
     Renders a navigation bar for the nursing staffing agency website
     """
-    cols = st.columns(8 if 'user_role' in st.session_state and st.session_state['user_role'] == 'admin' else 7)
+    # Determine the number of columns based on user role
+    if 'user_role' in st.session_state:
+        if st.session_state['user_role'] == 'admin':
+            # Admin gets Home, Services, For Nurses, For Clients, Jobs, Request, Contact, Admin
+            cols = st.columns(8)
+        else:  # Regular user/client gets a dashboard
+            # User gets Home, Services, For Nurses, For Clients, Jobs, Request, Contact, Dashboard
+            cols = st.columns(8)
+    else:  # Not logged in
+        # Not logged in gets Home, Services, For Nurses, For Clients, Jobs, Request, Contact
+        cols = st.columns(7)
     
     with cols[0]:
         if st.button("Home"):
@@ -41,11 +51,16 @@ def navbar():
             st.session_state['current_page'] = 'contact'
             st.rerun()
     
-    # Show Admin link only for admin users
-    if 'user_role' in st.session_state and st.session_state['user_role'] == 'admin':
+    # Show Admin link for admin users or Dashboard link for regular users
+    if 'user_role' in st.session_state:
         with cols[7]:
-            if st.button("Admin", type="primary"):
-                st.session_state['current_page'] = 'admin'
-                st.rerun()
+            if st.session_state['user_role'] == 'admin':
+                if st.button("Admin", type="primary"):
+                    st.session_state['current_page'] = 'admin'
+                    st.rerun()
+            else:
+                if st.button("My Dashboard", type="primary"):
+                    st.session_state['current_page'] = 'client_dashboard'
+                    st.rerun()
     
     st.divider()  # Add a divider below the navbar
