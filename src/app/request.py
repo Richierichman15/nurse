@@ -31,7 +31,7 @@ def send_email_notification(request_data):
         msg['To'] = EMAIL_RECIPIENT
         msg['Subject'] = f"New Nurse Request from {request_data['Name']}"
         
-        # Create email body
+        # Create email body with scheduled date
         body = f"""
         A new nursing assistance request has been submitted:
         
@@ -41,6 +41,8 @@ def send_email_notification(request_data):
         
         Request Description:
         {request_data['Description']}
+        
+        Scheduled Date: {request_data['Scheduled_Date']}
         
         This request has been recorded in your database.
         """
@@ -86,6 +88,27 @@ def request_page():
         phone = st.text_input("Your Phone Number:")
         address = st.text_input("Your Address:")
         request_description = st.text_area("Describe your request:")
+        
+        # Calendar date picker for scheduling
+        st.subheader("Schedule Your Service")
+        # Default to tomorrow as earliest available date
+        tomorrow = datetime.datetime.now().date() + datetime.timedelta(days=1)
+        # Allow scheduling up to 30 days in advance
+        max_date = tomorrow + datetime.timedelta(days=30)
+        
+        scheduled_date = st.date_input(
+            "Select preferred date for service:", 
+            value=tomorrow,
+            min_value=tomorrow,
+            max_value=max_date
+        )
+        
+        # Time slot selection
+        time_slots = ["Morning (8AM-12PM)", "Afternoon (12PM-4PM)", "Evening (4PM-8PM)"]
+        selected_time = st.selectbox("Select preferred time slot:", time_slots)
+        
+        # Combine date and time slot
+        full_schedule = f"{scheduled_date.strftime('%Y-%m-%d')} - {selected_time}"
 
         submit_button = st.form_submit_button("Send Request")
 
@@ -102,7 +125,8 @@ def request_page():
                     'Description': request_description,
                     'Status': 'New',  # Initialize with New status
                     'Request_Date': today,  # Add request date
-                    'Assigned_Nurse': 'Unassigned'  # Initialize as unassigned
+                    'Assigned_Nurse': 'Unassigned',  # Initialize as unassigned
+                    'Scheduled_Date': full_schedule  # Add the scheduled date and time slot
                 }
                 
                 # Create DataFrame for CSV storage
@@ -127,7 +151,7 @@ def request_page():
                 email_sent = send_email_notification(request_data)
                 
                 # Show success message
-                st.success("Submitted successfully! Getting your local nurse soon.")
+                st.success(f"Submitted successfully! Your service is scheduled for {full_schedule}.")
                 if email_sent:
                     st.info("A notification has been sent to our team.")
             else:

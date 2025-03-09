@@ -60,7 +60,7 @@ def display_request_management():
     
     # Filtering options
     st.subheader("Filter Requests")
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     
     with col1:
         status_filter = st.multiselect(
@@ -80,12 +80,25 @@ def display_request_management():
         else:
             nurse_filter = ['Unassigned']
     
+    with col3:
+        if 'Scheduled_Date' in requests_df.columns:
+            date_options = ['All Dates'] + list(requests_df['Scheduled_Date'].dropna().unique())
+            date_filter = st.selectbox(
+                "Scheduled Date",
+                options=date_options,
+                index=0
+            )
+        else:
+            date_filter = 'All Dates'
+    
     # Apply filters
     filtered_df = requests_df
     if status_filter:
         filtered_df = filtered_df[filtered_df['Status'].isin(status_filter)]
     if nurse_filter and 'Assigned_Nurse' in requests_df.columns:
         filtered_df = filtered_df[filtered_df['Assigned_Nurse'].isin(nurse_filter)]
+    if date_filter != 'All Dates' and 'Scheduled_Date' in requests_df.columns:
+        filtered_df = filtered_df[filtered_df['Scheduled_Date'] == date_filter]
     
     # Display requests
     st.subheader("Requests")
@@ -102,6 +115,11 @@ def display_request_management():
                 "Assigned_Nurse": st.column_config.TextColumn(
                     "Assigned Nurse",
                     help="Enter the name of the assigned nurse",
+                ),
+                "Scheduled_Date": st.column_config.TextColumn(
+                    "Scheduled Date",
+                    help="The date and time slot scheduled for this service",
+                    disabled=True,  # Make this field read-only to prevent errors
                 )
             },
             hide_index=True,

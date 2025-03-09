@@ -92,6 +92,10 @@ def display_active_requests(current_user):
                         st.write(f"**Address:** {request['Address']}")
                         st.write(f"**Phone:** {request['Phone']}")
                         
+                        # Display scheduled date if available
+                        if 'Scheduled_Date' in request and not pd.isna(request['Scheduled_Date']):
+                            st.write(f"**Scheduled For:** {request['Scheduled_Date']}")
+                        
                         # Assigned nurse (if any)
                         if 'Assigned_Nurse' in request and request['Assigned_Nurse'] != 'Unassigned':
                             st.write(f"**Assigned Nurse:** {request['Assigned_Nurse']}")
@@ -151,6 +155,10 @@ def display_request_history(current_user):
                         st.write(f"**Description:** {request['Description']}")
                         st.write(f"**Address:** {request['Address']}")
                         st.write(f"**Phone:** {request['Phone']}")
+                        
+                        # Display scheduled date if available
+                        if 'Scheduled_Date' in request and not pd.isna(request['Scheduled_Date']):
+                            st.write(f"**Scheduled For:** {request['Scheduled_Date']}")
                         
                         # Nurse who provided service
                         if 'Assigned_Nurse' in request and request['Assigned_Nurse'] != 'Unassigned':
