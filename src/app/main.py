@@ -6,6 +6,7 @@ from register import register_page, show_login_option
 from home import home_page
 from request import request_page
 from services import services_page
+from admin import admin_dashboard
 
 # Initialize session state for login status and page view
 if 'logged_in' not in st.session_state:
@@ -38,6 +39,8 @@ def show_main_app():
         # Add your contact page content here
     elif st.session_state['current_page'] == 'request':
         request_page()
+    elif st.session_state['current_page'] == 'admin':
+        admin_dashboard()
     else:
         # Default to home page
         home_page()
@@ -63,6 +66,7 @@ if st.session_state['current_page'] == 'login':
     if login_page():
         st.session_state['logged_in'] = True
         st.session_state['current_page'] = 'home'  # Go to home page after login
+        st.write(f"Current user role: {st.session_state.get('user_role', 'None')}")
         st.rerun()
     
     # Option to go to registration page
