@@ -8,6 +8,7 @@ from request import request_page
 from services import services_page
 from admin import admin_dashboard
 from client_dashboard import client_dashboard
+from chat_support import chat_support_page, admin_chat_dashboard
 
 # Initialize session state for login status and page view
 if 'logged_in' not in st.session_state:
@@ -28,24 +29,29 @@ def show_main_app():
         # Add your for nurses page content here
     elif st.session_state['current_page'] == 'for_clients':
         st.title("For Clients")
-        st.write("Information for healthcare facilities seeking staffing solutions.")
+        st.write("Information for clients looking to hire nursing professionals.")
         # Add your for clients page content here
     elif st.session_state['current_page'] == 'jobs':
-        st.title("Available Jobs")
-        st.write("Browse current job openings.")
+        st.title("Job Listings")
+        st.write("Browse available nursing positions.")
         # Add your jobs page content here
     elif st.session_state['current_page'] == 'contact':
         st.title("Contact Us")
         st.write("Get in touch with our team.")
         # Add your contact page content here
+    elif st.session_state['current_page'] == 'admin_dashboard' and st.session_state.get('user_role') == 'admin':
+        admin_dashboard()
+    elif st.session_state['current_page'] == 'client_dashboard' and st.session_state.get('user_role') == 'client':
+        client_dashboard()
     elif st.session_state['current_page'] == 'request':
         request_page()
-    elif st.session_state['current_page'] == 'admin':
-        admin_dashboard()
-    elif st.session_state['current_page'] == 'client_dashboard':
-        client_dashboard()
+    elif st.session_state['current_page'] == 'chat_support':
+        chat_support_page()
+    elif st.session_state['current_page'] == 'admin_chat_dashboard' and st.session_state.get('user_role') == 'admin':
+        admin_chat_dashboard()
     else:
-        # Default to home page
+        # Default to home if page not found
+        st.session_state['current_page'] = 'home'
         home_page()
 
 # Display login/logout in sidebar based on current state

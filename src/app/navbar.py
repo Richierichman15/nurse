@@ -7,14 +7,14 @@ def navbar():
     # Determine the number of columns based on user role
     if 'user_role' in st.session_state:
         if st.session_state['user_role'] == 'admin':
-            # Admin gets Home, Services, For Nurses, For Clients, Jobs, Request, Contact, Admin
-            cols = st.columns(8)
+            # Admin gets Home, Services, For Nurses, For Clients, Jobs, Request, Contact, Admin, Chat Support
+            cols = st.columns(9)
         else:  # Regular user/client gets a dashboard
-            # User gets Home, Services, For Nurses, For Clients, Jobs, Request, Contact, Dashboard
-            cols = st.columns(8)
+            # User gets Home, Services, For Nurses, For Clients, Jobs, Request, Contact, Dashboard, Chat Support
+            cols = st.columns(9)
     else:  # Not logged in
-        # Not logged in gets Home, Services, For Nurses, For Clients, Jobs, Request, Contact
-        cols = st.columns(7)
+        # Not logged in gets Home, Services, For Nurses, For Clients, Jobs, Request, Contact, Chat Support
+        cols = st.columns(8)
     
     with cols[0]:
         if st.button("Home"):
@@ -62,5 +62,11 @@ def navbar():
                 if st.button("My Dashboard", type="primary"):
                     st.session_state['current_page'] = 'client_dashboard'
                     st.rerun()
+    
+    # Add Chat Support button as the last item
+    with cols[-1]:
+        if st.button("Chat Support"):
+            st.session_state['current_page'] = 'chat_support'
+            st.rerun()
     
     st.divider()  # Add a divider below the navbar

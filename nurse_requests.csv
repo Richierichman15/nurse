@@ -1,10 +1,11 @@
-Name,Phone,Address,Description,Status,Request_Date,Assigned_Nurse
-Gitonga Nyaga,4059222239,8605 nw 107st,h8h,,,
-Gitonga Nyaga,4059222239,8605 nw 107st,esorign,,,
-Gitonga Nyaga,4059222239,8605 nw 107st,asd,,,
-Gitonga Nyaga,4059222239,8605 nw 107st,iii,,,
-Gitonga Nyaga,4059222239,8605 nw 107st,kkk,,,
-Gitonga Nyaga,4059222239,8605 nw 107st,fff,,,
-Gitonga Nyaga,4059222239,8605 nw 107st,jj,,,
-test,test,test,test,,,
-client,test,test,g,New,2025-03-09,Unassigned
+Name,Phone,Address,Description,Status,Request_Date,Assigned_Nurse,Scheduled_Date
+Gitonga Nyaga,4059222239,8605 nw 107st,h8h,,,,
+Gitonga Nyaga,4059222239,8605 nw 107st,esorign,,,,
+Gitonga Nyaga,4059222239,8605 nw 107st,asd,,,,
+Gitonga Nyaga,4059222239,8605 nw 107st,iii,,,,
+Gitonga Nyaga,4059222239,8605 nw 107st,kkk,,,,
+Gitonga Nyaga,4059222239,8605 nw 107st,fff,,,,
+Gitonga Nyaga,4059222239,8605 nw 107st,jj,,,,
+test,test,test,test,,,,
+client,test,test,g,New,2025-03-09,Unassigned,
+Gitonga Nyaga,4059222239,8605 nw 107st,help,New,2025-03-09,Unassigned,2025-03-11 - Morning (8AM-12PM)

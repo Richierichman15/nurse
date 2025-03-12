@@ -3,6 +3,7 @@ import pandas as pd
 import os
 from navbar import navbar
 import datetime
+from chat_support import admin_chat_dashboard
 
 def admin_dashboard():
     """
@@ -19,7 +20,7 @@ def admin_dashboard():
     st.title("Admin Dashboard")
     
     # Create tabs for different dashboard sections
-    tab1, tab2, tab3 = st.tabs(["Request Management", "Nurse Assignment", "Analytics"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Request Management", "Nurse Assignment", "Analytics", "Chat Support"])
     
     # Request Management Tab
     with tab1:
@@ -32,6 +33,10 @@ def admin_dashboard():
     # Analytics Tab
     with tab3:
         display_analytics()
+    
+    # Chat Support Tab
+    with tab4:
+        admin_chat_dashboard()
 
 def display_request_management():
     """Display and manage nurse requests"""

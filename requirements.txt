@@ -1,5 +1,8 @@
- psycopg2-binary
- streamlit
- sqlalchemy
- sqlite3
- python-dotenv
+psycopg2-binary
+streamlit
+sqlalchemy
+sqlite3
+python-dotenv
+openai
+streamlit-chat
+langchain
